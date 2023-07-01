@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\ServicesCandidat;
 
 use App\Models\Candidat;
 use Illuminate\Http\Request;

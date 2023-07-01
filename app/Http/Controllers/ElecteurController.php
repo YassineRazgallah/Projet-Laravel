@@ -1,10 +1,10 @@
 <?php
-////////////////////////////////////////////////////
+
 namespace App\Http\Controllers;
 use App\Models\Candidat;
 use App\Models\Electeur;
 use Illuminate\Http\Request;
-
+use App\Services\ServicesElecteur\ElecteurService ;
 class ElecteurController extends Controller
 {
     /**
@@ -38,7 +38,6 @@ class ElecteurController extends Controller
      */
     public function store(Request $request)
     {
-
         $request->validate([
             'nom' => 'required',
             'prenom' => 'required',
@@ -50,16 +49,13 @@ class ElecteurController extends Controller
             'cni.required' => 'Le champ CNI est obligatoire.',
             'candidat_id.required' => 'Le champ candidat_id est obligatoire.',
         ]);
-        $electeur = new Electeur();
-
-        $electeur->nom = $request->nom;
-        $electeur->prenom = $request->prenom;
-        $electeur->cni = $request->cni;
-        $electeur->candidat_id = $request->candidat_id;
-
-        $electeur->save();
-        return redirect()->back()->with('success', 'electeur Saved');
+    
+        $electeurService = new ElecteurService();
+        $electeurService->saveElecteur($request);
+    
+        return redirect()->back()->with('success', 'Electeur saved');
     }
+    
 
     /**
      * Display the specified resource.
@@ -82,8 +78,9 @@ class ElecteurController extends Controller
     {
         $electeur = Electeur::find($id);
         $candidats = Candidat::all();
-        return view('electeur.editer', compact('electeur'));
+        return view('electeur.editer', compact('electeur', 'candidats'));
     }
+    
 
     /**
      * Update the specified resource in storage.
@@ -93,17 +90,30 @@ class ElecteurController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
-        $electeur = Electeur::find($id);
+{
+    $request->validate([
+        'nom' => 'required',
+        'prenom' => 'required',
+        'cni' => 'required',
+        'candidat_id' => 'required',
+    ], [
+        'nom.required' => 'Le champ nom est obligatoire.',
+        'prenom.required' => 'Le champ prénom est obligatoire.',
+        'cni.required' => 'Le champ CNI est obligatoire.',
+        'candidat_id.required' => 'Le champ candidat_id est obligatoire.',
+    ]);
 
-        $electeur->nom = $request->nom;
-        $electeur->prenom = $request->prenom;
-        $electeur->cni = $request->cni;
-        $electeur->candidat_id = $request->candidat_id;
+    $electeur = Electeur::find($id);
+    $electeur->nom = $request->nom;
+    $electeur->prenom = $request->prenom;
+    $electeur->cni = $request->cni;
+    $electeur->candidat_id = $request->candidat_id;
 
-        $electeur->update();
-        return redirect()->route('liste.electeur')->with('success', 'electeur updated ');
-    }
+    $electeur->save();
+
+    return redirect()->route('liste.electeur')->with('success', 'Electeur mis à jour avec succès.');
+}
+
 
     /**
      * Remove the specified resource from storage.

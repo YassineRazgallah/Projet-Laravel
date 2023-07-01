@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Candidat;
 use Illuminate\Http\Request;
-use App\Services\CandidatService;
+use App\Services\ServicesCandidat\CandidatService;
+use App\Services\ServicesCandidat\CandidatUpdateService;
+
 
 class CandidatController extends Controller
 {
@@ -39,7 +41,7 @@ class CandidatController extends Controller
     public function store(Request $request, CandidatService $candidatService)
     {
         $candidatService->saveCandidat($request);
-        
+
         return redirect()->back()->with('success', 'Candidat Saved');
     }
 
@@ -74,18 +76,25 @@ class CandidatController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+
+
+    public function update(Request $request, $id, CandidatUpdateService $candidatService)
     {
-        $candidat = Candidat::find($id);
+        $nom = $request->nom;
+        $prenom = $request->prenom;
+        $dateNaissance = $request->dateNaissance;
+        $parti = $request->parti;
 
-        $candidat->nom = $request->nom;
-        $candidat->prenom = $request->prenom;
-        $candidat->dateNaissance = $request->dateNaissance;
-        $candidat->parti = $request->parti;
+        $result = $candidatService->updateCandidat($id, $nom, $prenom, $dateNaissance, $parti);
 
-        $candidat->update();
-        return redirect()->route('liste.candidat')->with('success', 'Candidat updated ');
+        if ($result) {
+            return redirect()->route('liste.candidat')->with('success', 'Candidat updated');
+        } else {
+            return redirect()->back()->withErrors(['Erreur lors de la mise à jour du candidat']);
+        }
     }
+
+
 
     /**
      * Remove the specified resource from storage.

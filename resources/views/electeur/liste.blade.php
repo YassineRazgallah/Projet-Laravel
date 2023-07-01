@@ -20,7 +20,7 @@
                             <td>{{ $electeur->nom }}</td>
                             <td>{{ $electeur->prenom }}</td>
                             <td>{{ $electeur->cni }}</td>
-                            <td>{{ isset($electeur->candidat) ? $electeur->candidat->nom : '' }}</td>
+<td>{{ isset($electeur->candidat) ? $electeur->candidat->nom : '' }}</td>
                             <td>
                                 <a href="{{ route('edit-electeur', $electeur->id) }}" class="btn btn-warning">Edit</a>
                                 <a onclick="return confirm('Do you wish to delete it');"
