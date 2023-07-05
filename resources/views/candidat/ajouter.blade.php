@@ -17,7 +17,7 @@
                      @csrf
                      <div class="form goup">
                             <label for="">Nom</label>
-                              <input type="text" name="nom" id="" class="form-control">
+                            <input type="text" name="nom" id="" class="form-control">
                      </div>
 
                      <div class="form goup">
